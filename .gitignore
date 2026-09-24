@@ -10,3 +10,6 @@ __pycache__/
 *.pptx
 *.sources.json
 .DS_Store
+
+# Local planning notes kept out of the published repository.
+docs/
