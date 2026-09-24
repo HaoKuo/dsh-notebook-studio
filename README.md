@@ -1,4 +1,4 @@
-# DSH-Notebook-Studio
+# dsh-notebook-studio
 
 **English** | [中文](README.zh.md)
 
