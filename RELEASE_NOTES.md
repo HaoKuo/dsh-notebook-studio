@@ -2,6 +2,23 @@
 
 **English** | Chinese is folded under each version below — click **中文** to expand.
 
+## v0.6.0 · 2026-09-25 (local development version, not yet released / 本地开发版本，尚未发布)
+
+- The plugin now follows the dsh language setting (`zh`/`en`). The Host serves one catalog through a new `getMessages` RPC (session-independent), built from `src/messages.js` + `src/messages.en.json`; keys are the Chinese source strings, so an untranslated entry falls back to the source text instead of an empty label. The Web client reads the active locale from the host locale service, installs the catalog once at load and re-renders an open workbench after a language switch; without the locale service it falls back to the browser language.
+- Static labels are translated where they render (a thin wrapper around the element factory, plus `placeholder`/`title`/`aria-label`), and assembled sentences such as `已选 3/3 篇` match catalog templates like `已选 {selected}/{total} 篇`; text with no catalog entry stays Chinese. Model-facing `studio_search` text (tool description, parameter description, guidance and errors) follows an explicitly selected non-Chinese preference, otherwise it stays in the source language.
+- The subtitle under the title now shows the **current workspace** (`工作区 · <folder>`, full session workspace path in the tooltip): the project snapshot gained `workspacePath`/`workspaceName`, so a session folder name such as `test1` is no longer mislabelled as a project. The plugin still has no workspace-folder picker — the workspace is the dsh session workspace chosen by the host, and deliverables are written under `notebook-studio/<session>/…` inside it.
+- `npm run check`: **40 JavaScript + 2 Python tests pass**, including a new regression that a `locale`-driven English render produces English labels while strings missing from the catalog keep the Chinese source.
+
+<details>
+<summary>中文</summary>
+
+- 插件现在跟随 dsh 的语言设置（`zh`/`en`）。宿主通过新增的 `getMessages` RPC（与会话无关）下发一份词典，来自 `src/messages.js` + `src/messages.en.json`；词典键是中文原文，未收录的条目会回退到中文原文而不是空标签。Web Client 从宿主 locale 服务读取当前语言，加载时安装词典，切换语言后重新渲染已打开的工作台；没有 locale 服务时退回浏览器语言。
+- 静态文案在渲染处翻译（元素工厂外挂一层轻量包装，并处理 `placeholder`／`title`／`aria-label`）；`已选 3/3 篇` 这类拼接句子按 `已选 {selected}/{total} 篇` 这样的词典模板匹配；没有对应条目的文案保持中文。面向模型的 `studio_search` 文案（工具描述、参数说明、返回指引与错误）跟随用户显式选择的非中文语言，否则保持原文。
+- 标题下的副标题改为显示**当前工作区**（`工作区 · <文件夹>`，悬停显示完整会话工作区路径）：项目快照新增 `workspacePath`／`workspaceName`，因此 `test1` 这种会话文件夹名不再被当成项目名。插件仍**没有**工作区文件夹选择器——工作区由宿主的会话工作区决定，成稿仍写在该工作区下的 `notebook-studio/<会话>/…`。
+- `npm run check`：**40 个 JavaScript + 2 个 Python 测试通过**，新增回归覆盖「locale 驱动的英文渲染输出英文标签，而词典未收录的文案保持中文原文」。
+
+</details>
+
 ## v0.5.3 · 2026-09-25 (local fix, not yet released / 本地修复，尚未发布)
 
 - Fixed the version label under the sidebar: it was hardcoded as `Notebook Studio · v0.5.0` and had drifted from `package.json`. The host now reads its own `package.json` version and sends it as `version` in the project snapshot, and the client renders `Notebook Studio · v<version>` (falling back to no version when absent), so the label follows the installed package again.

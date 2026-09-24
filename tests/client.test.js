@@ -5,16 +5,24 @@ import vm from 'node:vm'
 
 const source = await readFile(new URL('../lib/client.js', import.meta.url), 'utf8')
 
-function loadClient() {
+function loadClient(options = {}) {
   const entries = new Map()
   const declarations = new Set(['main', 'sidebar.panellist'])
   const cleanup = []
   const styles = []
   const navigation = []
   let plugin
-  const react = { createElement: (type, props, ...children) => ({ type, props, children }) }
+  const react = {
+    createElement: (type, props, ...children) => ({ type, props, children }),
+    useCallback: callback => callback,
+    useSyncExternalStore: (subscribe, getSnapshot) => getSnapshot(),
+  }
   const context = {
-    connection: { rpc: { call: () => assert.fail('未进入会话时不得调用 RPC') } },
+    // 语言词典与会话无关，可在进入会话前取用；其余 RPC 仍必须先有会话。
+    connection: { rpc: { call: (path, method) => method === 'getMessages'
+      ? Promise.resolve({ ok: true, value: options.messages || { en: {} } })
+      : assert.fail('未进入会话时不得调用 RPC') } },
+    ...(options.locale ? { locale: options.locale } : {}),
     layout: { selectPanel: panel => navigation.push(panel) },
     effect: callback => cleanup.push(callback()),
     slots: {
@@ -102,4 +110,23 @@ test('Studio 配色使用宿主语义变量，不保留旧青绿色主题', () =
   // PDF 预览是文档白纸，界面其余颜色必须由宿主控制。
   assert.deepEqual(Array.from(css.matchAll(/#[\da-f]{3,8}\b/gi), match => match[0]), ['#fff'])
   client.dispose()
+})
+
+test('界面文案跟随 dsh 语言设置，缺失翻译回退到中文原文', async () => {
+  const locale = { getLocale: () => ({ active: 'en' }), subscribe: () => () => {} }
+  const client = loadClient({ locale, messages: { en: { '先选择一个会话': 'Choose a session first' } } })
+  await new Promise(resolve => setImmediate(resolve))
+  const session = client.entries.get('notebook-studio.session')
+  const english = session.component({ sessionId: undefined, ...session.options.inject() })
+  assert.match(JSON.stringify(english), /Choose a session first/)
+  // 未收录的文案保持原文，界面不会出现空标签。
+  assert.match(JSON.stringify(english), /每个会话对应独立的文献项目/)
+  client.dispose()
+
+  const fallback = loadClient()
+  await new Promise(resolve => setImmediate(resolve))
+  const plain = fallback.entries.get('notebook-studio.session')
+  const chinese = plain.component({ sessionId: undefined, ...plain.options.inject() })
+  assert.match(JSON.stringify(chinese), /先选择一个会话/)
+  fallback.dispose()
 })

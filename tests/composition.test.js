@@ -66,11 +66,16 @@ test('正文编辑 RPC 保留引用、拒绝过期版本，重新导出不调用
     throw new Error('编辑排版超时')
   }
   try {
+    // 语言词典与会话无关：客户端进入工作台前即可取用。
+    const messages = await studio.handle('getMessages', {})
+    assert.equal(messages.ok, true)
+    assert.equal(typeof messages.value.en, 'object')
     const snapshot = (await studio.handle('listSources', { sessionId: 'owner' })).value
     assert.equal(snapshot.projectTitle, '编辑验收项目')
     // The Web client renders the version label from this field instead of hardcoding it.
     assert.equal(snapshot.version, JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8')).version)
-    assert.equal(typeof snapshot.projectPath, 'string')
+    assert.equal(typeof snapshot.workspacePath, 'string')
+    assert.equal(typeof snapshot.workspaceName, 'string')
     for (const kind of ['deck', 'report']) {
       const started = await studio.handle(kind === 'deck' ? 'generateDeck' : 'generateReport',
         { sessionId: 'owner', prompt: PROMPT, sourceIds: [sourceId] })

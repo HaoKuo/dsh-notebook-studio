@@ -11,6 +11,7 @@ import { writeDeckPdf } from './deck-pdf.js'
 import { generateConceptImage } from './image.js'
 import { importBatch, uploadedBatches } from './imports.js'
 import { ingestAttachment } from './ingest.js'
+import { MESSAGES } from './messages.js'
 import { buildOutline, searchWithRewrite, validateOutline } from './model.js'
 import { buildReport, renderReport, reportFingerprint } from './report.js'
 import { StudioStore } from './store.js'
@@ -27,6 +28,9 @@ const VERSION = (() => {
   try { return JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version }
   catch { return null }
 })()
+
+// 用户显式选择的界面语言存放于 dsh 设置文档的 `locale` 命名空间。
+const LOCALE_SETTINGS_NAMESPACE = 'locale'
 
 function failure(error) {
   return { ok: false, error: { code: 'studio/error',
@@ -217,6 +221,8 @@ export function createStudioService(ctx, config = {}) {
 
   async function handle(endpoint, input = {}) {
     try {
+      // 语言词典与会话无关，客户端可在进入工作台前取用。
+      if (endpoint === 'getMessages') return { ok: true, value: MESSAGES }
       const current = await session(input.sessionId)
       const store = storeFor(String(current.id))
       reconcile(current)
@@ -232,7 +238,8 @@ export function createStudioService(ctx, config = {}) {
           }
           return { ok: true, value: {
           projectTitle: current.header?.title || basename(current.header?.cwd || '') || '当前会话文献项目',
-          projectPath: current.header?.cwd || '',
+          workspacePath: current.header?.cwd || '',
+          workspaceName: basename(current.header?.cwd || ''),
           version: VERSION,
           sources: store.listSources(), importErrors: store.importErrors(), jobs: store.listJobs(),
           outline: store.getOutline(), deck: publicDeck(store.latestDeck(), store),
@@ -478,6 +485,16 @@ export function createStudioService(ctx, config = {}) {
 
 export function apply(ctx, config = {}) {
   const studio = createStudioService(ctx, config)
+  // 面向模型的文案跟随 dsh 语言设置：仅在用户显式选择非中文时改用英文词典，
+  // 否则保留中文原文（浏览器自行决定的语言无法在宿主侧读到）。
+  const hostText = text => {
+    try {
+      const preference = ctx.get?.('settings')?.describe?.()
+        ?.find(item => item.ns === LOCALE_SETTINGS_NAMESPACE)?.value?.preference
+      const id = String(preference || '').toLowerCase()
+      return id && !id.startsWith('zh') ? MESSAGES.en[text] ?? text : text
+    } catch { return text }
+  }
   ctx.connection.rpc.handle('/studio', (endpoint, payload) => studio.handle(endpoint, payload))
   for (const kind of ['deck', 'manifest', 'deck-pdf', 'report-docx', 'report-pdf', 'report-manifest']) {
     // dsh 必须显式声明无请求体的读取模式，否则 GET 会被当作带流请求而返回空的 400。
@@ -489,20 +506,20 @@ export function apply(ctx, config = {}) {
   for (const session of ctx.sessions.list()) studio.reconcile(session)
   ctx.tools.register(defineTool({
     name: 'studio_search',
-    description: '检索当前会话 Notebook Studio 中已导入的 PDF。每条结果包含文献名、PDF 页码、证据 ID 与原文摘录；证据不足时不要猜测。',
-    parameters: { query: { type: 'string', required: true, description: '中文或英文的简短学术检索问题' } },
+    description: hostText('检索当前会话 Notebook Studio 中已导入的 PDF。每条结果包含文献名、PDF 页码、证据 ID 与原文摘录；证据不足时不要猜测。'),
+    parameters: { query: { type: 'string', required: true, description: hostText('中文或英文的简短学术检索问题') } },
     output: {
       schema: { type: 'json' },
       render: (_args, value) => [{ type: 'text', text: JSON.stringify(value, null, 2) }],
     },
     async execute(args, execution) {
-      if (!execution.agent) throw new Error('必须从当前会话调用文献检索')
+      if (!execution.agent) throw new Error(hostText('必须从当前会话调用文献检索'))
       const store = studio.storeFor(String(execution.agent.session.id))
-      if (typeof args.query !== 'string' || args.query.length > 300) throw new Error('检索问题无效')
+      if (typeof args.query !== 'string' || args.query.length > 300) throw new Error(hostText('检索问题无效'))
       const rows = await searchWithRewrite(ctx, store, args.query,
         store.getSettings().text, execution.signal)
-      return { results: rows, guidance: rows.length ? '回答请引用 evidenceId、文献名和 PDF 页码。'
-        : '没有匹配的证据；请说明证据不足，或换用更具体的中英文检索词。' }
+      return { results: rows, guidance: rows.length ? hostText('回答请引用 evidenceId、文献名和 PDF 页码。')
+        : hostText('没有匹配的证据；请说明证据不足，或换用更具体的中英文检索词。') }
     },
   }))
   ctx.effect(() => () => studio.shutdown(), 'Notebook Studio：停止后台任务并关闭数据库')

@@ -1,6 +1,6 @@
 {
   "name": "dsh-notebook-studio",
-  "version": "0.5.3",
+  "version": "0.6.0",
   "private": true,
   "type": "module",
   "description": "从 PDF 文献生成有引用的报告与演示文稿的 DeepSeek Harness Studio 插件",
@@ -16,6 +16,7 @@
     "client": {
       "inject": [
         "@deepseek-ai/dsh-client-connection",
+        "@deepseek-ai/dsh-client-locale",
         "@deepseek-ai/dsh-client-ui-layout",
         "@deepseek-ai/dsh-client-ui-sidebar",
         "@deepseek-ai/dsh-client-ui-session",
