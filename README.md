@@ -1,10 +1,10 @@
-# dsh Notebook Studio
+# DSH-Notebook-Studio
 
 **English** | [中文](README.zh.md)
 
 Treat one dsh session as a literature project: import up to 30 text-based PDFs, choose which papers this run uses, search page-anchored evidence, and turn a prompt into a **report (DOCX/PDF)** or a **deck (PPTX/PDF)**. Finished documents are saved automatically into the current session workspace and can be previewed as PDF inside Studio. Web background is optional and off by default; original figures, editable flowcharts and evidence tables are planned per section and per page, with AI concept illustrations an optional extra instead of one fixed image for every section.
 
-This is a standalone Git repository; it does not contain dsh itself, your papers, or generated documents. Repository: <https://github.com/HaoKuo/dsh-notebook-studio>. Planning and acceptance scope live in `docs/NOTEBOOKLM_STUDIO_PLAN.md`, and the version history is in `RELEASE_NOTES.md`.
+This is a standalone Git repository; it does not contain dsh itself, your papers, or generated documents. Repository: <https://github.com/HaoKuo/dsh-notebook-studio>. The version history is in `RELEASE_NOTES.md`.
 
 ## Requirements and installation
 
