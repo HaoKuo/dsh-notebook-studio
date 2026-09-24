@@ -10,7 +10,7 @@ Repository: <https://github.com/HaoKuo/dsh-notebook-studio> · Version history: 
 
 - DeepSeek Harness `0.1.7-rc.2` (`engines.dsh`), Node.js 24, Python 3.12 with PyMuPDF.
 - PDF typesetting uses PDFKit and needs a TTF font carrying CJK glyphs: Arial Unicode is picked up automatically, otherwise set `STUDIO_CJK_FONT=/path/to/font.ttf`.
-- Optional: `@qithird/dsh-paste-input-plus@0.2.1` for PDF upload from the chat input box (in-Studio upload does not need it); an image service returning base64 PNG from `images/generations`; web references through dsh's `ctx.web.search`, which fails explicitly when no provider is configured.
+- Optional: an image service returning base64 PNG from `images/generations`; web references through dsh's `ctx.web.search`, which fails explicitly when no provider is configured.
 
 From the repository root:
 
@@ -47,7 +47,7 @@ Restart `dsh web` after installing or updating so the Web client is rebundled.
 The workbench opens from **NotebookStudio** above "Plugins" in the dsh sidebar: library on the left, body editor / PDF preview in the middle, authoring settings on the right, models and APIs in the gear settings. "Back to chat" returns to the session without switching it.
 
 1. Select a dsh session, then click **NotebookStudio**; with no session you are asked to pick or create one. To switch projects, choose another session in the host sidebar.
-2. Add papers from the chat-box paperclip or from the library (multiple files or a folder; non-PDFs are skipped). Up to 30 per project, each non-empty and **strictly under 30,000,000 bytes (30 MB)**, deduplicated by content hash. Scans are not OCR'd. Leaving the workbench cancels unfinished uploads; indexed papers and running tasks continue.
+2. Add papers from the library (multiple files or a folder; non-PDFs are skipped). Up to 30 per project, each non-empty and **strictly under 30,000,000 bytes (30 MB)**, deduplicated by content hash. Scans are not OCR'd. Leaving the workbench cancels unfinished uploads; indexed papers and running tasks continue.
 3. In "Model settings" choose a loaded dsh text model (DeepSeek Flash by default) or enter a standalone API's Base URL, model and key. The image model is off by default; when enabled it needs an endpoint compatible with `/v1/images/generations` (leave the key empty for a local Qwen). One image waits 600 s by default, configurable to 30–1800 s.
 4. Once papers show "indexed", tick the ones this run uses and write the goal. "Add web search references" sends prompt keywords only, never PDF text; web sources are listed as `[Wn]` with URL and time and never count as `[n] PDF p.x` paper evidence.
 5. Choose **DOCX or PDF** and click "Generate full report", or **PPTX or PDF** and click "Generate full deck". A deck first builds a 14-page cited outline in 4 batches, then drafts each page from PDF excerpts (conclusion, argument, speaker notes) and typesets. The outline step is optional: generate, edit and save it, then build the document from it.

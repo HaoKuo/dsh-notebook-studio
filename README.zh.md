@@ -10,7 +10,7 @@
 
 - DeepSeek Harness `0.1.7-rc.2`（`engines.dsh`）、Node.js 24、Python 3.12 + PyMuPDF。
 - PDF 使用 PDFKit 直接排版，需要包含中文字形的 TTF 字体：本机可自动选用 Arial Unicode，其他环境设置 `STUDIO_CJK_FONT=/path/to/font.ttf`。
-- 可选：`@qithird/dsh-paste-input-plus@0.2.1` 支持从**聊天输入框**上传 PDF（Studio 内上传不依赖它）；需要返回 `images/generations` base64 PNG 的生图服务；联网参考使用 dsh 的 `ctx.web.search`，没有配置搜索提供方时会明确失败。
+- 可选：需要返回 `images/generations` base64 PNG 的生图服务；联网参考使用 dsh 的 `ctx.web.search`，没有配置搜索提供方时会明确失败。
 
 在仓库根目录执行：
 
@@ -47,7 +47,7 @@ export STUDIO_PYTHON=~/.venv-studio/bin/python    # 启动 dsh web 前设置
 工作台从 dsh 侧栏「插件」上方的 **NotebookStudio** 打开：左侧资料库、中间正文编辑／PDF 预览、右侧创作设置，模型与 API 放在齿轮设置中。「返回对话」退出工作台但不更换会话。
 
 1. 先选择一个 dsh 会话，再点击 **NotebookStudio**；没有会话时会提示选择或新建。换项目就在宿主侧栏选择另一个会话。
-2. 从聊天框回形针或在资料库中添加文献（可多选或选文件夹，非 PDF 会跳过）。每项目最多 30 篇，单篇必须非空且**严格小于 30,000,000 字节（30 MB）**，按内容哈希去重；扫描件不做 OCR。离开工作台会取消未传完的上传，已入库文献与正在运行的任务继续。
+2. 在资料库中添加文献（可多选或选文件夹，非 PDF 会跳过）。每项目最多 30 篇，单篇必须非空且**严格小于 30,000,000 字节（30 MB）**，按内容哈希去重；扫描件不做 OCR。离开工作台会取消未传完的上传，已入库文献与正在运行的任务继续。
 3. 在「模型设置」选择已加载的 dsh 文本模型（默认 DeepSeek Flash），或填写独立 API 的 Base URL、模型与密钥。图片模型默认关闭；启用时需兼容 `/v1/images/generations`（本机 Qwen 可留空密钥）。单张图默认等待 600 秒，可设 30–1800 秒。
 4. 文献显示「已索引」后，勾选本次使用的 PDF 并填写写作目标。「加入网络搜索参考」只发送提示词关键词、不发送 PDF 正文；网络来源以 `[Wn]` 并附 URL 与时间单列，不能冒充 `[n] PDF p.x` 的论文证据。
 5. 选择 **DOCX 或 PDF** 点「生成完整报告」，或选择 **PPTX 或 PDF** 点「生成完整演示」。演示先分 4 批生成 14 页有引用的大纲，再逐页带入 PDF 摘录生成结论、论述和讲者备注，最后排版。大纲是可选步骤：可先生成、编辑保存，再据此生成详细成稿。
