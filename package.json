@@ -4,6 +4,14 @@
   "private": true,
   "type": "module",
   "description": "从 PDF 文献生成有引用的报告与演示文稿的 DeepSeek Harness Studio 插件",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HaoKuo/dsh-notebook-studio.git"
+  },
+  "homepage": "https://github.com/HaoKuo/dsh-notebook-studio#readme",
+  "bugs": {
+    "url": "https://github.com/HaoKuo/dsh-notebook-studio/issues"
+  },
   "exports": {
     ".": "./src/index.js",
     "./client": "./lib/client.js",

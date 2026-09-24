@@ -4,7 +4,7 @@
 
 将一个 dsh 会话作为一个文献项目：导入最多 30 篇文字版 PDF，选择本次使用的文献，检索带页码的证据，通过提示词生成**报告（DOCX/PDF）**或**演示文稿（PPTX/PDF）**。成稿自动保存到当前会话工作区，并可在 Studio 内预览 PDF。可选联网背景，默认不搜索；按章节和页内容规划文献原图、可编辑流程图与证据表，AI 概念示意图也是可选项，不再固定全篇各一张图。
 
-这是独立 Git 仓库，不包含 dsh 本体、文献或成稿。规划与验收范围见 `docs/NOTEBOOKLM_STUDIO_PLAN.md`，版本记录见 `RELEASE_NOTES.md`。
+这是独立 Git 仓库，不包含 dsh 本体、文献或成稿。仓库地址：<https://github.com/HaoKuo/dsh-notebook-studio>。规划与验收范围见 `docs/NOTEBOOKLM_STUDIO_PLAN.md`，版本记录见 `RELEASE_NOTES.md`。
 
 ## 要求与安装
 
