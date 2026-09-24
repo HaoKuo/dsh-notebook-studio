@@ -2,6 +2,21 @@
 
 **English** | Chinese is folded under each version below — click **中文** to expand.
 
+## v0.5.3 · 2026-09-25 (local fix, not yet released / 本地修复，尚未发布)
+
+- Fixed the version label under the sidebar: it was hardcoded as `Notebook Studio · v0.5.0` and had drifted from `package.json`. The host now reads its own `package.json` version and sends it as `version` in the project snapshot, and the client renders `Notebook Studio · v<version>` (falling back to no version when absent), so the label follows the installed package again.
+- Task records now show what actually happened. Each row renders the task type (`导入文献`, `生成大纲`, `生成报告`, `生成演示`, `重新排版`, `重试解析`), the local start time (`MM/DD HH:mm`), the state, the last phase when it differs from the state, and the duration of finished jobs; the summary shows the row count. Previously the row printed `phase` plus the state label, so a finished job showed two lines that both read "完成". The type and both timestamps were already stored in SQLite (`jobs.kind`, `created_at`, `updated_at`) — only the rendering was missing them.
+- The project label under the title is now prefixed with `项目 · ` and its tooltip carries the full session workspace path (new `projectPath` field), so a bare folder name such as `test1` — the fallback used when a session has no title — is no longer ambiguous.
+
+<details>
+<summary>中文</summary>
+
+- 修复侧栏下方的版本号：原先是硬编码 `Notebook Studio · v0.5.0`，与 `package.json` 脱节。现在宿主读取自身 `package.json` 的版本，作为 `version` 放进项目快照，客户端渲染 `Notebook Studio · v<版本>`（缺失时不显示），版本号重新跟随已安装的包。
+- 任务记录改为显示真实信息：每行渲染任务类型（`导入文献`／`生成大纲`／`生成报告`／`生成演示`／`重新排版`／`重试解析`）、本地开始时间（`MM/DD HH:mm`）、状态、与状态不同的最后阶段，以及已完成任务的耗时；摘要显示条数。此前该行只打印 `phase` 和状态文案，于是完成任务显示成两行都叫「完成」。类型与两个时间戳其实一直存在 SQLite（`jobs.kind`、`created_at`、`updated_at`），只是渲染时没有使用。
+- 标题下的项目名加上 `项目 · ` 前缀，并把完整会话工作区路径放进提示（新增 `projectPath` 字段），因此像 `test1` 这种「会话无标题时回退到工作区文件夹名」的情况不再有歧义。
+
+</details>
+
 ## v0.5.2 · 2026-09-25 (local development version, not yet released / 本地开发版本，尚未发布)
 
 - Host dependency pins moved from `0.1.6-alpha.2` to **`0.1.7-rc.2`** for `@deepseek-ai/dsh-llm` and `@deepseek-ai/dsh-tools`, with a fresh `npm install` so the whole tree (`@deepseek-ai/dsh-agent` included) resolves at `0.1.7-rc.2`; the exports the plugin actually uses (`BlockAssembler`, `createUserMessage`, `defineTool`) are unchanged or a superset between the two versions.

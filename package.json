@@ -1,6 +1,6 @@
 {
   "name": "dsh-notebook-studio",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "private": true,
   "type": "module",
   "description": "从 PDF 文献生成有引用的报告与演示文稿的 DeepSeek Harness Studio 插件",

@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto'
-import { createReadStream } from 'node:fs'
+import { createReadStream, readFileSync } from 'node:fs'
 import { stat } from 'node:fs/promises'
 import { basename, join } from 'node:path'
 import { Readable } from 'node:stream'
@@ -21,6 +21,12 @@ import { editDocument, readDocument } from './editor.js'
 
 export const name = 'dsh-notebook-studio'
 export const inject = ['connection', 'sessions', 'sessionController', 'llm', 'tools', 'web']
+
+// Serve the real package version to the Web client instead of hardcoding it there.
+const VERSION = (() => {
+  try { return JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version }
+  catch { return null }
+})()
 
 function failure(error) {
   return { ok: false, error: { code: 'studio/error',
@@ -226,6 +232,8 @@ export function createStudioService(ctx, config = {}) {
           }
           return { ok: true, value: {
           projectTitle: current.header?.title || basename(current.header?.cwd || '') || '当前会话文献项目',
+          projectPath: current.header?.cwd || '',
+          version: VERSION,
           sources: store.listSources(), importErrors: store.importErrors(), jobs: store.listJobs(),
           outline: store.getOutline(), deck: publicDeck(store.latestDeck(), store),
           report: publicReport(store.latestReport(), store), outputWarning: warnings.join('；'),
