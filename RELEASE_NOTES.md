@@ -2,6 +2,23 @@
 
 **English** | Chinese is folded under each version below — click **中文** to expand.
 
+## v0.6.1 · 2026-09-25 (local development version, not yet released / 本地开发版本，尚未发布)
+
+- Host integration is declared instead of bundled: `@deepseek-ai/dsh-llm` and `@deepseek-ai/dsh-tools` moved from `dependencies` to `peerDependencies` (still installed as `devDependencies` for the source tree), and `engines.dsh` now states `^0.1.7-rc.2`. Hosts and plugin catalogs can therefore read the required DSH line instead of an undeclared requirement, and a profile no longer ends up with a second copy of the host packages.
+- The plugin installs straight from this repository: `dsh plugin --profile web add github:HaoKuo/dsh-notebook-studio` — verified end to end in a throwaway `DSH_HOME` (the profile recorded `github:HaoKuo/dsh-notebook-studio` and installed 0.6.0 in 3.6 s), and pnpm also accepts the `git+https://…` and hosted-URL forms. Pinning a release works once the tag exists: `#v0.6.1`.
+- PDF parsing no longer assumes a bundled virtual environment: `src/ingest.js` resolves `STUDIO_PYTHON` (which must be usable when set) → the package's `.venv` → `python3`/`python` on `PATH`, requires the candidate to `import pymupdf`, and otherwise fails with a message naming every candidate plus the fix. A git/npm install is therefore usable without a pre-built venv.
+- `npm run check`: **41 JavaScript + 2 Python tests pass**, adding the interpreter-resolution regression (fallback to the packaged venv, explicit failure for an unusable `STUDIO_PYTHON`).
+
+<details>
+<summary>中文</summary>
+
+- 宿主集成从"打包依赖"改为"声明依赖"：`@deepseek-ai/dsh-llm`、`@deepseek-ai/dsh-tools` 从 `dependencies` 移到 `peerDependencies`（源码树仍以 `devDependencies` 安装），并新增 `engines.dsh: ^0.1.7-rc.2`。宿主与插件目录因此能读到所需的 DSH 版本线，而不是"未声明"，profile 里也不再出现第二份宿主包副本。
+- 插件可直接从本仓库安装：`dsh plugin --profile web add github:HaoKuo/dsh-notebook-studio`——已在一次性 `DSH_HOME` 里端到端验证（profile 记录 `github:HaoKuo/dsh-notebook-studio`，3.6 秒装好 0.6.0），pnpm 同时支持 `git+https://…` 与仓库页面 URL 写法；打好 tag 后可用 `#v0.6.1` 固定版本。
+- PDF 解析不再假定存在 `.venv`：`src/ingest.js` 依次解析 `STUDIO_PYTHON`（设置后必须可用）→ 包内 `.venv` → `PATH` 上的 `python3`／`python`，并要求候选解释器能 `import pymupdf`，否则报错列出全部候选与修复方法。git/npm 安装因此无需预建虚拟环境即可使用。
+- `npm run check`：**41 个 JavaScript + 2 个 Python 测试通过**，新增解释器解析回归（回退到包内 venv；`STUDIO_PYTHON` 不可用时明确失败）。
+
+</details>
+
 ## v0.6.0 · 2026-09-25 (local development version, not yet released / 本地开发版本，尚未发布)
 
 - The plugin now follows the dsh language setting (`zh`/`en`). The Host serves one catalog through a new `getMessages` RPC (session-independent), built from `src/messages.js` + `src/messages.en.json`; keys are the Chinese source strings, so an untranslated entry falls back to the source text instead of an empty label. The Web client reads the active locale from the host locale service, installs the catalog once at load and re-renders an open workbench after a language switch; without the locale service it falls back to the browser language.

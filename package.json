@@ -1,6 +1,6 @@
 {
   "name": "dsh-notebook-studio",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "private": true,
   "type": "module",
   "license": "MIT",
@@ -35,7 +35,8 @@
     }
   },
   "engines": {
-    "node": ">=24"
+    "node": ">=24",
+    "dsh": "^0.1.7-rc.2"
   },
   "scripts": {
     "test": "node --test tests/*.test.js",
@@ -43,13 +44,17 @@
     "check": "node --check src/index.js && node --check src/editor.js && node --check src/imports.js && node --check src/uploads.js && node --check src/settings.js && node --check src/context.js && node --check src/model.js && node --check src/deck-draft.js && node --check src/report.js && node --check src/report-files.js && node --check src/pdf.js && node --check src/deck.js && node --check src/deck-pdf.js && node --check src/image.js && node --check src/exports.js && node --check src/visuals.js && node --check lib/client.js && npm test && npm run test:pdf"
   },
   "dependencies": {
-    "@deepseek-ai/dsh-llm": "0.1.7-rc.2",
-    "@deepseek-ai/dsh-tools": "0.1.7-rc.2",
     "docx": "9.7.2",
     "pdfkit": "0.20.2",
     "pptxgenjs": "4.0.1"
   },
+  "peerDependencies": {
+    "@deepseek-ai/dsh-llm": "^0.1.7-rc.2",
+    "@deepseek-ai/dsh-tools": "^0.1.7-rc.2"
+  },
   "devDependencies": {
+    "@deepseek-ai/dsh-llm": "0.1.7-rc.2",
+    "@deepseek-ai/dsh-tools": "0.1.7-rc.2",
     "jszip": "3.10.2"
   }
 }

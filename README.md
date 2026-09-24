@@ -27,6 +27,22 @@ ln -sfn "$PWD/.agents/skills/research-studio" "$HOME/.dsh/skills/research-studio
 
 When `dsh` is not on `PATH`, use the absolute path to its executable instead. In this machine's `web` profile the plugin and the skill are already symlinked to this repository; **do not let the install command stand in for confirmation**. After installing or updating, the user schedules the restart of the running `dsh web` themselves so the Web client is rebundled. This task never stops or restarts a running dsh.
 
+### Install from GitHub
+
+The Host installs git sources through pnpm, so no local clone is needed:
+
+```sh
+dsh plugin --profile web add github:HaoKuo/dsh-notebook-studio
+# pin a release:  github:HaoKuo/dsh-notebook-studio#v0.6.1
+```
+
+A git install ships no Python virtual environment, so PDF parsing resolves an interpreter in this order: `STUDIO_PYTHON` (which must be usable when set), the package's own `.venv`, then `python3`/`python` on `PATH`. The interpreter has to `import pymupdf`; when none qualifies, the error names every candidate it tried and how to fix it:
+
+```sh
+python3 -m venv ~/.venv-studio && ~/.venv-studio/bin/pip install "PyMuPDF>=1.26,<2"
+export STUDIO_PYTHON=~/.venv-studio/bin/python    # before starting dsh web
+```
+
 ## Language
 
 The plugin follows the dsh language setting (Settings → General → Language, `zh`/`en`). At load the Web client reads the active locale from the host locale service and fetches one catalog from the host (`getMessages`); catalog keys are the Chinese source strings, so a missing translation falls back to the Chinese text instead of an empty label. Switching the language re-renders an open workbench. The host-side `studio_search` text (tool description and the guidance returned to the model) follows an explicitly selected non-Chinese preference and otherwise stays in the source language.

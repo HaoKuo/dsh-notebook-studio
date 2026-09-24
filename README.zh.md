@@ -27,6 +27,22 @@ ln -sfn "$PWD/.agents/skills/research-studio" "$HOME/.dsh/skills/research-studio
 
 `dsh` 不在 `PATH` 时改用实际可执行文件的绝对路径。本机 `web` profile 中插件和技能已软链接到本仓库；**不要让安装命令代替确认**。安装或更新后由用户自行安排重启现有 `dsh web`，以重新打包 Web Client。本任务不自动停止或重启正在运行的 dsh。
 
+### 从 GitHub 安装
+
+宿主通过 pnpm 安装 git 源，无需本地克隆：
+
+```sh
+dsh plugin --profile web add github:HaoKuo/dsh-notebook-studio
+# 固定到某个发布版本：github:HaoKuo/dsh-notebook-studio#v0.6.1
+```
+
+git 安装不带 Python 虚拟环境。PDF 解析按顺序寻找解释器：`STUDIO_PYTHON`（设置后必须可用）→ 包内 `.venv` → `PATH` 上的 `python3`／`python`，且该解释器必须能 `import pymupdf`；都不满足时，报错会列出尝试过的每个候选项以及修复方法：
+
+```sh
+python3 -m venv ~/.venv-studio && ~/.venv-studio/bin/pip install "PyMuPDF>=1.26,<2"
+export STUDIO_PYTHON=~/.venv-studio/bin/python    # 启动 dsh web 前设置
+```
+
 ## 语言
 
 插件跟随 dsh 的语言设置（设置 → 通用 → 语言，`zh`/`en`）。Web Client 加载时从宿主 locale 服务读取当前语言，并向宿主取一份词典（`getMessages`）；词典键就是中文原文，因此缺失的翻译会回退到中文原文而不是空标签。切换语言会重新渲染已打开的工作台。宿主侧 `studio_search` 的面向模型文案（工具描述与返回给模型的指引）跟随用户显式选择的非中文语言；没有显式选择时保持原文。
