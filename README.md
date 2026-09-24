@@ -75,3 +75,7 @@ This did not mean the server failed to generate the body, nor was it an image-mo
 ### Text model output truncated
 
 `max-tokens` means the model reached this call's output ceiling, not that PDF import failed. `v0.3.1` disables unnecessary reasoning output for DeepSeek structured writing, raises the budgets for summaries, outlines, per-page drafts and reports, and retries a limited number of times with a higher budget when truncation is explicit; if it still fails, the task keeps the concrete stage and suggests a model with longer output or a narrower generation scope. After updating the plugin the user must restart the running `dsh web` themselves, then click generate again; completed per-paper summaries and per-page drafts continue to be reused.
+
+## License
+
+MIT — see [LICENSE](LICENSE).

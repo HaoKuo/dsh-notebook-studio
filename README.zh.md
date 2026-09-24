@@ -75,3 +75,7 @@ ln -sfn "$PWD/.agents/skills/research-studio" "$HOME/.dsh/skills/research-studio
 ### 文本模型输出被截断
 
 `max-tokens` 表示模型到达本次调用的输出上限，不是 PDF 导入失败。`v0.3.1` 对 DeepSeek 结构化写作关闭不必要的推理输出，调高摘要、大纲、逐页成稿及报告额度，并在明确截断时有限次提高额度重试；仍失败时任务会保留具体阶段并提示改用支持更长输出的模型或缩小生成范围。更新插件后需由用户自行重启运行中的 `dsh web`，再重新点击生成；已完成的逐篇摘要和逐页成稿会继续复用。
+
+## 许可证
+
+MIT，见 [LICENSE](LICENSE)。
