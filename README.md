@@ -6,6 +6,17 @@ Treat one dsh session as a literature project: import up to 30 text-based PDFs, 
 
 Repository: <https://github.com/HaoKuo/dsh-notebook-studio> · Version history: `RELEASE_NOTES.md`
 
+## Features
+
+- **Source-grounded answers** — chat and `studio_search` return the paper, PDF page and an evidence ID for every claim, and answers carry `[n] PDF p.x` citations instead of unsourced prose.
+- **A local PDF pipeline** — up to 30 text-based PDFs per session project are parsed with PyMuPDF, deduplicated by content hash and indexed in a local SQLite FTS5 store; only the selected excerpts are sent to the model you configure.
+- **Reports and decks from those sources** — page-cited DOCX/PDF reports and PPTX/PDF decks with speaker notes, built outline-first and then page by page.
+- **Editable deliverables** — edit titles, summaries, paragraphs, table findings and per-page text, then re-typeset; re-typesetting writes a new directory and never overwrites an edited copy.
+- **Planned visuals** — 0–2 visuals per report section and one main visual per deck page: original figures, editable flowcharts, evidence tables, and optional AI illustrations that are never presented as paper results.
+- **Bring your own models** — any model already registered in dsh, or a standalone OpenAI-compatible endpoint; image generation is optional and off by default, and web references (keyword-only, `[Wn]`) stay separate from paper evidence.
+- **dsh-native** — one session is one project, deliverables land in the session workspace, and the workbench follows the dsh theme and language.
+- **Scope** — text-based PDFs only (no OCR), 30 papers per project, no audio/video overview, mind map, flashcard, quiz or infographic output, single user, no sharing.
+
 ## Requirements and installation
 
 - DeepSeek Harness `0.1.7-rc.2` (`engines.dsh`), Node.js 24, Python 3.12 with PyMuPDF.
