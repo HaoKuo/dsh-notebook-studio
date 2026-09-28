@@ -8,14 +8,16 @@ Repository: <https://github.com/HaoKuo/dsh-notebook-studio> · Version history: 
 
 ## Features
 
-- **Source-grounded answers** — chat and `studio_search` return the paper, PDF page and an evidence ID for every claim, and answers carry `[n] PDF p.x` citations instead of unsourced prose.
-- **A local PDF pipeline** — up to 30 text-based PDFs per session project are parsed with PyMuPDF, deduplicated by content hash and indexed in a local SQLite FTS5 store; only the selected excerpts are sent to the model you configure.
-- **Reports and decks from those sources** — page-cited DOCX/PDF reports and PPTX/PDF decks with speaker notes, built outline-first and then page by page.
-- **Editable deliverables** — edit titles, summaries, paragraphs, table findings and per-page text, then re-typeset; re-typesetting writes a new directory and never overwrites an edited copy.
-- **Planned visuals** — 0–2 visuals per report section and one main visual per deck page: original figures, editable flowcharts, evidence tables, and optional AI illustrations that are never presented as paper results.
-- **Bring your own models** — any model already registered in dsh, or a standalone OpenAI-compatible endpoint; image generation is optional and off by default, and web references (keyword-only, `[Wn]`) stay separate from paper evidence.
-- **dsh-native** — one session is one project, deliverables land in the session workspace, and the workbench follows the dsh theme and language.
-- **Scope** — text-based PDFs only (no OCR), 30 papers per project, no audio/video overview, mind map, flashcard, quiz or infographic output, single user, no sharing.
+- **Collect a paper set** — one dsh session is one project: add up to 30 text-based PDFs from files or a whole folder (non-PDFs are skipped), each non-empty and under 30 MB, with duplicates dropped by content hash. Every paper shows its own status, failures give a reason and can be retried, and scans are not OCR'd.
+- **Ask the papers** — search the library from the left column or with `studio_search` in chat, and get back the paper, the PDF page, an evidence ID and the excerpt, so answers can cite `[n] PDF p.x` instead of unsourced prose. A Chinese question is first rewritten into English keywords, so English papers are reachable from a Chinese prompt.
+- **Write a report** — choose DOCX or PDF and a writing goal: sections are planned from the selected papers, each one is written against page-level excerpts, and the result includes an evidence table, original figures and a reference list.
+- **Build a deck** — choose PPTX or PDF: a cited outline comes first and can be edited and saved, then every page is drafted from PDF excerpts with a key conclusion, discussion and speaker notes, and typeset.
+- **Illustrate from the content** — 0–2 visuals per report section and one main visual per deck page: original figures, editable flowcharts, evidence tables, and optional AI concept illustrations that are never presented as paper results.
+- **Edit and re-typeset** — change titles, summaries, paragraphs, table findings or per-page text and save; the result is typeset into a new directory and never overwrites an export you already have.
+- **Preview, export, trace** — preview the finished PDF inside Studio, download DOCX/PPTX/PDF or the source JSON, and see the real file paths and provenance behind each citation and figure.
+- **Choose your models** — any model registered in dsh, or a standalone OpenAI-compatible endpoint; keys stay local and are never returned in plaintext. Image generation is optional and off by default; web references are optional, send prompt keywords only, and are listed separately as `[Wn]`.
+- **Let it run in the background** — leaving the workbench does not stop a running job; the task record lists type, time and duration, completed pages and papers are reused on retry, and uploads can be cancelled.
+- **Scope** — text-based PDFs only (no OCR), 30 papers per project, single user; no audio/video overview, mind map, flashcard, quiz or infographic output, and no shared notebooks.
 
 ## Requirements and installation
 
