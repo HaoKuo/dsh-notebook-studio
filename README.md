@@ -2,21 +2,23 @@
 
 **English** | [中文](README.zh.md)
 
-Treat one dsh session as a literature project: import up to 30 text-based PDFs, choose which papers a run uses, search page-anchored evidence, and turn a prompt into a **report (DOCX/PDF)** or a **deck (PPTX/PDF)**. Deliverables are saved to the session workspace and can be previewed as PDF inside Studio.
+Upload a set of PDF papers into a dsh session and work on them with prompts: review the literature, extract key findings, shape research ideas and a study design, and generate a page-cited **report (DOCX/PDF)** or **slide deck (PPTX/PDF)**. Every claim stays tied to `[n] PDF p.x` evidence, and deliverables are written into the session workspace.
 
 Repository: <https://github.com/HaoKuo/dsh-notebook-studio> · Version history: `RELEASE_NOTES.md`
 
 ## Features
 
-- **Collect a paper set** — one dsh session is one project: add up to 30 text-based PDFs from files or a whole folder (non-PDFs are skipped), each non-empty and under 30 MB, with duplicates dropped by content hash. Every paper shows its own status, failures give a reason and can be retried, and scans are not OCR'd.
-- **Ask the papers** — search the library from the left column or with `studio_search` in chat, and get back the paper, the PDF page, an evidence ID and the excerpt, so answers can cite `[n] PDF p.x` instead of unsourced prose. A Chinese question is first rewritten into English keywords, so English papers are reachable from a Chinese prompt.
-- **Write a report** — choose DOCX or PDF and a writing goal: sections are planned from the selected papers, each one is written against page-level excerpts, and the result includes an evidence table, original figures and a reference list.
-- **Build a deck** — choose PPTX or PDF: a cited outline comes first and can be edited and saved, then every page is drafted from PDF excerpts with a key conclusion, discussion and speaker notes, and typeset.
+- **Upload a paper set** — up to 30 text-based PDFs per session project, from files or a whole folder (non-PDFs skipped), deduplicated by content hash; each paper shows its own status, failures explain themselves and can be retried, and scans are not OCR'd.
+- **Review the literature** — give a goal such as "compare the evidence and the disagreements around X" and get a 4–7 section review whose every paragraph cites the PDF pages it came from, ending with a reference list.
+- **Extract key findings** — pull methods, samples, results and limitations out of the corpus, and get a cross-paper evidence table where each entry links back to a paper and a page.
+- **Shape research ideas and a study design** — reuse the same cited evidence to draft research questions, gaps, ideas and a study design; this is model synthesis on top of the papers, so the facts still point at `[n] PDF p.x`.
+- **Generate a report** — DOCX or PDF, with an executive overview, sections, evidence table, original figures and references.
+- **Generate a slide deck** — PPTX or PDF; a cited outline is built first and can be edited and saved, then every page is drafted with a key conclusion, discussion and speaker notes.
+- **Ask the papers in chat** — `studio_search` answers with paper, PDF page, evidence ID and excerpt, and a Chinese question is rewritten into English keywords first.
 - **Illustrate from the content** — 0–2 visuals per report section and one main visual per deck page: original figures, editable flowcharts, evidence tables, and optional AI concept illustrations that are never presented as paper results.
-- **Edit and re-typeset** — change titles, summaries, paragraphs, table findings or per-page text and save; the result is typeset into a new directory and never overwrites an export you already have.
-- **Preview, export, trace** — preview the finished PDF inside Studio, download DOCX/PPTX/PDF or the source JSON, and see the real file paths and provenance behind each citation and figure.
-- **Choose your models** — any model registered in dsh, or a standalone OpenAI-compatible endpoint; keys stay local and are never returned in plaintext. Image generation is optional and off by default; web references are optional, send prompt keywords only, and are listed separately as `[Wn]`.
-- **Let it run in the background** — leaving the workbench does not stop a running job; the task record lists type, time and duration, completed pages and papers are reused on retry, and uploads can be cancelled.
+- **Edit, preview, export, trace** — edit any text and re-typeset into a new directory (existing exports are never overwritten), preview the PDF inside Studio, download DOCX/PPTX/PDF or the source JSON, and see the real paths and provenance behind every citation.
+- **Choose your models** — any model registered in dsh or a standalone OpenAI-compatible endpoint; keys stay local, image generation is optional and off by default, and web references are optional keyword-only `[Wn]` entries.
+- **Run in the background** — leaving the workbench does not stop a job; the task record lists type, time and duration, retries reuse finished pages and papers, and uploads can be cancelled.
 - **Scope** — text-based PDFs only (no OCR), 30 papers per project, single user; no audio/video overview, mind map, flashcard, quiz or infographic output, and no shared notebooks.
 
 ## Requirements and installation
