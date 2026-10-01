@@ -2,6 +2,21 @@
 
 **English** | Chinese is folded under each version below — click **中文** to expand.
 
+## v0.6.3 · 2026-10-01 (local fix, not yet released / 本地修复，尚未发布)
+
+- Fixed plugin activation on dsh `0.2.0-rc.2`. `0.6.2` declared `webServer` but still hit `cannot get property "webServer" without inject` while registering its routes, which aborted `apply()` before `studio_search` existed — the tool therefore disappeared on 0.2.0 hosts. The studio RPC channel and the six download routes are now registered inside a `ctx.inject(['webServer'], …)` scope, the same shape dsh's own connection plugin and other profile plugins use.
+- `studio_search` is registered before the Web routes, so a future change to the host's RPC or Fetch registry can only affect downloads, never the search tool.
+- Verified in a throwaway `DSH_HOME` on `0.2.0-rc.2`: the profile boots with **no "did not activate" warning**, and `npm run check` passes **41 JavaScript + 2 Python tests** (the download-route test now drives the same injection shape as the host).
+
+<details>
+<summary>中文</summary>
+
+- 修复在 dsh `0.2.0-rc.2` 上无法激活的问题。`0.6.2` 虽然声明了 `webServer`，但注册路由时仍抛 `cannot get property "webServer" without inject`，导致 `apply()` 在注册 `studio_search` 之前中断——工具因此在 0.2.0 宿主上消失。现在 studio RPC 通道与六条下载路由都在 `ctx.inject(['webServer'], …)` 作用域内注册，与 dsh 自带 connection 插件及其它 profile 插件的写法一致。
+- `studio_search` 现在先于 Web 路由注册，因此将来宿主改动 RPC/Fetch 注册方式时，最多只影响下载，不会让检索工具消失。
+- 已用一次性 `DSH_HOME` 在 `0.2.0-rc.2` 上验证：profile 启动**不再出现 "did not activate" 告警**；`npm run check` 通过 **41 个 JavaScript + 2 个 Python 测试**（下载路由测试改为与宿主相同的注入形态）。
+
+</details>
+
 ## v0.6.2 · 2026-10-01 (local development version, not yet released / 本地开发版本，尚未发布)
 
 - Host compatibility widened to the `0.2.0` line: `engines.dsh` and both peer ranges now read `^0.1.7-rc.2 || ^0.2.0-rc.2`, and the development dependencies moved to `0.2.0-rc.2`.

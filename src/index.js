@@ -21,7 +21,7 @@ import { conceptPrompt } from './visuals.js'
 import { editDocument, readDocument } from './editor.js'
 
 export const name = 'dsh-notebook-studio'
-export const inject = ['connection', 'sessions', 'sessionController', 'llm', 'tools', 'web']
+export const inject = ['connection', 'sessions', 'sessionController', 'llm', 'tools', 'web', 'webServer']
 
 // Serve the real package version to the Web client instead of hardcoding it there.
 const VERSION = (() => {
@@ -484,6 +484,7 @@ export function createStudioService(ctx, config = {}) {
 }
 
 export function apply(ctx, config = {}) {
+
   const studio = createStudioService(ctx, config)
   // 面向模型的文案跟随 dsh 语言设置：仅在用户显式选择非中文时改用英文词典，
   // 否则保留中文原文（浏览器自行决定的语言无法在宿主侧读到）。
@@ -495,15 +496,8 @@ export function apply(ctx, config = {}) {
       return id && !id.startsWith('zh') ? MESSAGES.en[text] ?? text : text
     } catch { return text }
   }
-  ctx.connection.rpc.handle('/studio', (endpoint, payload) => studio.handle(endpoint, payload))
-  for (const kind of ['deck', 'manifest', 'deck-pdf', 'report-docx', 'report-pdf', 'report-manifest']) {
-    // dsh 必须显式声明无请求体的读取模式，否则 GET 会被当作带流请求而返回空的 400。
-    ctx.connection.fetch.register({ path: `/api/studio/${kind}`, methods: ['GET', 'HEAD'], requestBody: 'buffered',
-      fetch: request => studio.download(request, kind) })
-  }
-  ctx.on('session/event', (session, event) => studio.reconcile(session, event), { global: true })
-  ctx.on('session/disposed', session => studio.forgetSession(session.id), { global: true })
-  for (const session of ctx.sessions.list()) studio.reconcile(session)
+  // Web 路由与会话事件放在工具注册之后：宿主一旦变更 RPC/Fetch 的注入要求，
+  // 也只是下载或自动导入失效，检索工具不会跟着消失。
   ctx.tools.register(defineTool({
     name: 'studio_search',
     description: hostText('检索当前会话 Notebook Studio 中已导入的 PDF。每条结果包含文献名、PDF 页码、证据 ID 与原文摘录；证据不足时不要猜测。'),
@@ -522,5 +516,18 @@ export function apply(ctx, config = {}) {
         : hostText('没有匹配的证据；请说明证据不足，或换用更具体的中英文检索词。') }
     },
   }))
+  // dsh 0.2.0 起，connection 的 RPC/Fetch 注册要求调用方具备 webServer 注入；
+  // 与官方插件同一写法：在 webServer 作用域内注册，宿主 API 变化也只影响 Web 路由。
+  ctx.inject(['webServer'], webCtx => {
+    webCtx.connection.rpc.handle('/studio', (endpoint, payload) => studio.handle(endpoint, payload))
+    for (const kind of ['deck', 'manifest', 'deck-pdf', 'report-docx', 'report-pdf', 'report-manifest']) {
+      // dsh 必须显式声明无请求体的读取模式，否则 GET 会被当作带流请求而返回空的 400。
+      webCtx.connection.fetch.register({ path: `/api/studio/${kind}`, methods: ['GET', 'HEAD'], requestBody: 'buffered',
+        fetch: request => studio.download(request, kind) })
+    }
+  })
+  ctx.on('session/event', (session, event) => studio.reconcile(session, event), { global: true })
+  ctx.on('session/disposed', session => studio.forgetSession(session.id), { global: true })
+  for (const session of ctx.sessions.list()) studio.reconcile(session)
   ctx.effect(() => () => studio.shutdown(), 'Notebook Studio：停止后台任务并关闭数据库')
 }

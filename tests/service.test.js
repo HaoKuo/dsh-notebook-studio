@@ -22,10 +22,13 @@ test('所有下载和预览路由声明 buffered，HTTP GET 完整传输文件�
   store.close()
   const routes = new Map()
   const disposers = []
-  apply({ sessions: { list: () => [], get: sessionId => ({ id: sessionId, header: { cwd: root },
+  const hostCtx = { sessions: { list: () => [], get: sessionId => ({ id: sessionId, header: { cwd: root },
     snapshotEvents: () => [] }) }, connection: { rpc: { handle() {} },
     fetch: { register: route => routes.set(route.path, route) } }, tools: { register() {} },
-    on() {}, effect: dispose => disposers.push(dispose) }, { dataRoot: root })
+    on() {}, effect: dispose => disposers.push(dispose) }
+  // 0.2.0 起插件在 webServer 注入作用域里注册 Web 路由，这里等价地把子上下文交回回调。
+  hostCtx.inject = (_names, callback) => callback(hostCtx)
+  apply(hostCtx, { dataRoot: root })
   const server = createServer(async (request, response) => {
     try {
       const url = new URL(request.url, 'http://localhost')

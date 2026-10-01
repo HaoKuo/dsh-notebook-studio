@@ -45,7 +45,7 @@ The Host installs git sources through pnpm, so no local clone is needed:
 
 ```sh
 dsh plugin --profile web add github:HaoKuo/dsh-notebook-studio
-# pin a release:  github:HaoKuo/dsh-notebook-studio#v0.6.2
+# pin a release:  github:HaoKuo/dsh-notebook-studio#v0.6.3
 ```
 
 PDF parsing looks for `STUDIO_PYTHON` (which must be usable when set) → the package's `.venv` → `python3`/`python` on `PATH`, and requires `import pymupdf`; when none qualifies the error lists every candidate and the fix:

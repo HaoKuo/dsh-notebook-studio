@@ -45,7 +45,7 @@ ln -sfn "$PWD/.agents/skills/research-studio" "$HOME/.dsh/skills/research-studio
 
 ```sh
 dsh plugin --profile web add github:HaoKuo/dsh-notebook-studio
-# 固定到某个发布版本：github:HaoKuo/dsh-notebook-studio#v0.6.2
+# 固定到某个发布版本：github:HaoKuo/dsh-notebook-studio#v0.6.3
 ```
 
 PDF 解析按 `STUDIO_PYTHON`（设置后必须可用）→ 包内 `.venv` → `PATH` 上的 `python3`／`python` 依次寻找，并要求该解释器能 `import pymupdf`；都不满足时报错会列出每个候选与修复方法：
