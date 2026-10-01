@@ -2,6 +2,23 @@
 
 **English** | Chinese is folded under each version below — click **中文** to expand.
 
+## v0.6.2 · 2026-10-01 (local development version, not yet released / 本地开发版本，尚未发布)
+
+- Host compatibility widened to the `0.2.0` line: `engines.dsh` and both peer ranges now read `^0.1.7-rc.2 || ^0.2.0-rc.2`, and the development dependencies moved to `0.2.0-rc.2`.
+- Why it was needed: dsh `0.2.0-rc.2` refuses to load a profile bundle whose peer ranges exclude the running host, and it skipped `dsh-notebook-studio@0.6.1` together with `dsh-doc`, `dshmarket` and `dsh-mnemon`. With the widened ranges the plugin loads again — verified by the plugin's HTTP route being registered in a running `0.2.0-rc.2` instance.
+- Verified against `0.2.0-rc.2`: `npm run check` passes **41 JavaScript + 2 Python tests**; the exports the plugin uses are unchanged between the two lines (`dsh-llm` 65 exports, `dsh-tools` 22, no removals); all six client modules it injects still exist.
+- Requirement note: hosts on either line are supported, and `engines.dsh` keeps both in range so a later plugin version does not have to re-declare them.
+
+<details>
+<summary>中文</summary>
+
+- 宿主兼容范围扩展到 `0.2.0` 版本线：`engines.dsh` 与两个 peer 都改为 `^0.1.7-rc.2 || ^0.2.0-rc.2`，开发依赖升到 `0.2.0-rc.2`。
+- 为什么必须改：dsh `0.2.0-rc.2` 会**拒绝加载 peer 范围不覆盖当前宿主的插件包**，`dsh-notebook-studio@0.6.1` 与 `dsh-doc`、`dshmarket`、`dsh-mnemon` 一起被跳过。放宽范围后插件恢复加载——以运行中的 `0.2.0-rc.2` 实例里插件 HTTP 路由已注册为证。
+- 已针对 `0.2.0-rc.2` 验证：`npm run check` 通过 **41 个 JavaScript + 2 个 Python 测试**；插件用到的导出在两条版本线之间没有变化（`dsh-llm` 65 个导出、`dsh-tools` 22 个，无移除）；它注入的 6 个客户端模块也都存在。
+- 要求说明：两条版本线的宿主都支持，`engines.dsh` 同时保留两者，后续插件版本无需重复声明。
+
+</details>
+
 ## v0.6.1 · 2026-09-25 (local development version, not yet released / 本地开发版本，尚未发布)
 
 - Host integration is declared instead of bundled: `@deepseek-ai/dsh-llm` and `@deepseek-ai/dsh-tools` moved from `dependencies` to `peerDependencies` (still installed as `devDependencies` for the source tree), and `engines.dsh` now states `^0.1.7-rc.2`. Hosts and plugin catalogs can therefore read the required DSH line instead of an undeclared requirement, and a profile no longer ends up with a second copy of the host packages.

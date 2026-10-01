@@ -23,7 +23,7 @@
 
 ## 要求与安装
 
-- DeepSeek Harness `0.1.7-rc.2`（`engines.dsh`）、Node.js 24、Python 3.12 + PyMuPDF。
+- DeepSeek Harness `0.1.7-rc.2` 或 `0.2.0-rc.2`（`engines.dsh`）、Node.js 24、Python 3.12 + PyMuPDF。
 - PDF 排版需要包含中文字形的 TTF 字体：本机自动选用 Arial Unicode，其他环境设置 `STUDIO_CJK_FONT=/path/to/font.ttf`。
 - 可选：兼容 `images/generations` 的生图服务（base64 PNG）；dsh 的 `ctx.web.search` 联网参考。
 
@@ -45,7 +45,7 @@ ln -sfn "$PWD/.agents/skills/research-studio" "$HOME/.dsh/skills/research-studio
 
 ```sh
 dsh plugin --profile web add github:HaoKuo/dsh-notebook-studio
-# 固定到某个发布版本：github:HaoKuo/dsh-notebook-studio#v0.6.1
+# 固定到某个发布版本：github:HaoKuo/dsh-notebook-studio#v0.6.2
 ```
 
 PDF 解析按 `STUDIO_PYTHON`（设置后必须可用）→ 包内 `.venv` → `PATH` 上的 `python3`／`python` 依次寻找，并要求该解释器能 `import pymupdf`；都不满足时报错会列出每个候选与修复方法：
@@ -74,7 +74,7 @@ export STUDIO_PYTHON=~/.venv-studio/bin/python    # 启动 dsh web 前设置
 
 ### 宿主兼容范围
 
-插件只使用公开槽位（`sidebar.panellist`、`main`、`session-maybe` 子槽、`layout.selectPanel(null)`），不使用私有路由、不改宿主核心布局、不模拟点击。已在 dsh `0.1.7-rc.2` 上验证 `npm run check`、profile 合成，以及运行中的 `dsh web` 能挂载宿主侧插件。
+插件只使用公开槽位（`sidebar.panellist`、`main`、`session-maybe` 子槽、`layout.selectPanel(null)`），不使用私有路由、不改宿主核心布局、不模拟点击。已在 dsh `0.2.0-rc.2` 与 `0.1.7-rc.2` 上验证 `npm run check`、profile 合成，以及运行中的 `dsh web` 能挂载宿主侧插件。
 
 ## 目录和安全
 

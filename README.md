@@ -23,7 +23,7 @@ Repository: <https://github.com/HaoKuo/dsh-notebook-studio> · Version history: 
 
 ## Requirements and installation
 
-- DeepSeek Harness `0.1.7-rc.2` (`engines.dsh`), Node.js 24, Python 3.12 with PyMuPDF.
+- DeepSeek Harness `0.1.7-rc.2` or `0.2.0-rc.2` (`engines.dsh`), Node.js 24, Python 3.12 with PyMuPDF.
 - PDF typesetting needs a TTF font carrying CJK glyphs: Arial Unicode is used automatically, otherwise set `STUDIO_CJK_FONT=/path/to/font.ttf`.
 - Optional: an image service compatible with `images/generations` (base64 PNG); dsh's `ctx.web.search` for web references.
 
@@ -45,7 +45,7 @@ The Host installs git sources through pnpm, so no local clone is needed:
 
 ```sh
 dsh plugin --profile web add github:HaoKuo/dsh-notebook-studio
-# pin a release:  github:HaoKuo/dsh-notebook-studio#v0.6.1
+# pin a release:  github:HaoKuo/dsh-notebook-studio#v0.6.2
 ```
 
 PDF parsing looks for `STUDIO_PYTHON` (which must be usable when set) → the package's `.venv` → `python3`/`python` on `PATH`, and requires `import pymupdf`; when none qualifies the error lists every candidate and the fix:
@@ -74,7 +74,7 @@ The workbench opens from **NotebookStudio** above "Plugins" in the dsh sidebar: 
 
 ### Host compatibility
 
-The plugin uses public host slots only (`sidebar.panellist`, `main`, the `session-maybe` sub-slot, `layout.selectPanel(null)`), with no private routes, core-layout changes or simulated clicks. Verified on dsh `0.1.7-rc.2`: `npm run check`, profile composition, and host-side mounting in a running `dsh web`.
+The plugin uses public host slots only (`sidebar.panellist`, `main`, the `session-maybe` sub-slot, `layout.selectPanel(null)`), with no private routes, core-layout changes or simulated clicks. Verified on dsh `0.2.0-rc.2` and `0.1.7-rc.2`: `npm run check`, profile composition, and host-side mounting in a running `dsh web`.
 
 ## Layout and security
 
