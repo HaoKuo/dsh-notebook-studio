@@ -518,11 +518,17 @@ export function apply(ctx, config = {}) {
   }))
   // dsh 0.2.0 起，connection 的 RPC/Fetch 注册要求调用方具备 webServer 注入；
   // 与官方插件同一写法：在 webServer 作用域内注册，宿主 API 变化也只影响 Web 路由。
-  ctx.inject(['webServer'], webCtx => {
-    webCtx.connection.rpc.handle('/studio', (endpoint, payload) => studio.handle(endpoint, payload))
+  ctx.inject(['connection', 'webServer'], webCtx => {
+    // connection 在注册路由时读的是「接收者上下文」的 webServer，只注入而不显式带上该属性时
+    // 路由不会真正挂载（表现为客户端 RPC 请求落到 SPA 兜底并返回 405）。这里与 dsh-mnemon 一致，
+    // 用 extend 把 webServer 放进接收者上下文，再取 connection。
+    const connection = typeof webCtx.extend === 'function'
+      ? webCtx.extend({ webServer: webCtx.get('webServer') }).connection
+      : webCtx.connection
+    connection.rpc.handle('/studio', (endpoint, payload) => studio.handle(endpoint, payload))
     for (const kind of ['deck', 'manifest', 'deck-pdf', 'report-docx', 'report-pdf', 'report-manifest']) {
       // dsh 必须显式声明无请求体的读取模式，否则 GET 会被当作带流请求而返回空的 400。
-      webCtx.connection.fetch.register({ path: `/api/studio/${kind}`, methods: ['GET', 'HEAD'], requestBody: 'buffered',
+      connection.fetch.register({ path: `/api/studio/${kind}`, methods: ['GET', 'HEAD'], requestBody: 'buffered',
         fetch: request => studio.download(request, kind) })
     }
   })

@@ -2,6 +2,21 @@
 
 **English** | Chinese is folded under each version below — click **中文** to expand.
 
+## v0.6.4 · 2026-10-01 (local fix, not yet released / 本地修复，尚未发布)
+
+- Fixed the Web client failing with `transport failure for /studio/…: HTTP 405` on dsh `0.2.0-rc.2`. Registering the studio RPC channel inside a plain `ctx.inject(['webServer'], …)` scope was not enough: the connection service reads `webServer` from the *receiver* context, so the route was never mounted and browser calls fell through to the SPA fallback, which answers `405` to a POST.
+- The registration now extends the injected context with `webServer` before reading `connection` (`webCtx.extend({ webServer: webCtx.get('webServer') }).connection`), the same shape `dsh-mnemon` uses on 0.2.0, and falls back to `webCtx.connection` when `extend` is unavailable.
+- Verified in a throwaway `DSH_HOME` on `0.2.0-rc.2`: `POST /studio/listSources` answers `200` with a normal RPC envelope (it answered `405` before the fix), `POST /studio/getMessages` returns the message dictionaries, and the profile boots with no "did not activate" warning. `npm run check` passes **41 JavaScript + 2 Python tests**.
+
+<details>
+<summary>中文</summary>
+
+- 修复 dsh `0.2.0-rc.2` 上 Web 客户端报 `transport failure for /studio/…: HTTP 405` 的问题。只在 `ctx.inject(['webServer'], …)` 作用域里注册 studio RPC 通道**并不够**：connection 服务是从「接收者上下文」读取 `webServer` 的，因此路由从未挂载，浏览器请求落到 SPA 兜底，而兜底对 POST 返回 `405`。
+- 现在注册前先把 `webServer` 扩展进注入上下文再取 `connection`（`webCtx.extend({ webServer: webCtx.get('webServer') }).connection`），与 `dsh-mnemon` 在 0.2.0 上的写法一致；当 `extend` 不可用时回退到 `webCtx.connection`。
+- 已用一次性 `DSH_HOME` 在 `0.2.0-rc.2` 上验证：`POST /studio/listSources` 返回 **200** 与正常 RPC 信封（修复前为 `405`），`POST /studio/getMessages` 正常返回消息字典，profile 启动无 "did not activate" 告警；`npm run check` 通过 **41 个 JavaScript + 2 个 Python 测试**。
+
+</details>
+
 ## v0.6.3 · 2026-10-01 (local fix, not yet released / 本地修复，尚未发布)
 
 - Fixed plugin activation on dsh `0.2.0-rc.2`. `0.6.2` declared `webServer` but still hit `cannot get property "webServer" without inject` while registering its routes, which aborted `apply()` before `studio_search` existed — the tool therefore disappeared on 0.2.0 hosts. The studio RPC channel and the six download routes are now registered inside a `ctx.inject(['webServer'], …)` scope, the same shape dsh's own connection plugin and other profile plugins use.
